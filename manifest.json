@@ -1,0 +1,31 @@
+{
+	"name": "TIKTOK COLLECTOR",
+	"description": "Extension that allows you to collect videos",
+	"version": "1.0",
+	"manifest_version": 3,
+	"permissions": [
+		"activeTab",
+		"storage"
+	],
+	"content_scripts": [
+		{
+			"matches": [
+				"https://www.tiktok.com/*"
+			],
+			"js": [
+				"content.js"
+			]
+		}
+	],
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": {
+			"48": "/assets/icons/48.png",
+			"128": "/assets/icons/128.png"
+		}
+	},
+	"icons": {
+		"48": "/assets/icons/48.png",
+		"128": "/assets/icons/128.png"
+	}
+}
