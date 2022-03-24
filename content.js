@@ -10,12 +10,12 @@ const removeFromStorage = keys => {
     return new Promise((resolve, _) => chrome.storage.sync.remove(keys, result => resolve(result)));
 }
 
-const onPreview = async (e) => {
+const onPreview = async (e, cropBottom, cropTop) => {
     const previewPoster = document.querySelector(".tiktok-j6dmhd-ImgPoster");
 
     if (previewPoster === null) return;
 
-    await setToStorage({ preview: previewPoster.src });
+    await setToStorage({ preview: { url: previewPoster.src, crop: { top: cropTop, bottom: cropBottom } } });
 }
 
 const onAddVideo = async (e, cropTop, cropBottom) => {
@@ -24,7 +24,7 @@ const onAddVideo = async (e, cropTop, cropBottom) => {
 
     const [user, _, videoId] = cropedUrl.split("/");
 
-    const { channel, videos=[] } = await getFromStorage(["channel", "videos"]);
+    const { channel, videos = [] } = await getFromStorage(["channel", "videos"]);
     if (channel === undefined) {
         alert("Выберите канал перед началом создания подборки");
         return;
@@ -43,7 +43,7 @@ const onAddVideo = async (e, cropTop, cropBottom) => {
         return;
     };
 
-    const newVideos = [ ...videos, { videoId, user, link: videoUrl, crop: { bottom: cropBottom, top: cropTop }}];
+    const newVideos = [...videos, { videoId, user, link: videoUrl, crop: { bottom: cropBottom, top: cropTop } }];
 
     setToStorage({ videos: newVideos });
 }
@@ -51,7 +51,7 @@ const onAddVideo = async (e, cropTop, cropBottom) => {
 const onCropInput = (e, viewer) => {
     if (e.target === null) return;
 
-    viewer.style = `height: ${ e.target.value }%;`;
+    viewer.style = `height: ${e.target.value}%;`;
 }
 
 const onResetCrop = (e, bottom, top, vBottom, vTop) => {
@@ -75,12 +75,12 @@ const addControl = () => {
     cropTop.oninput = e => onCropInput(e, cropTopViewer);
     buttonAddVideo.onclick = e => onAddVideo(e, cropTop.value, cropBottom.value);
     buttonReset.onclick = e => onResetCrop(e, cropBottom, cropTop, cropBottomViewer, cropTopViewer);
-    buttonPreview.onclick = e => onPreview(e);
+    buttonPreview.onclick = e => onPreview(e, cropBottom.value, cropTop.value);
 }
 
 const addCropViewer = () => {
     const viewContainer = document.querySelector(".tiktok-1xn27qj-DivVideoWrapper");
-    const cropViewerContainer  = document.querySelector(".cropViewer");
+    const cropViewerContainer = document.querySelector(".cropViewer");
 
     if (viewContainer === null || cropViewerContainer !== null) return;
 
@@ -106,16 +106,16 @@ const addMenu = () => {
 
     const menu = document.createElement("div");
     menu.className = "collectorMenu";
-    
+
     const cropContainer = document.createElement("div");
     cropContainer.className = "cropContainer";
-    
+
     const wrapperCropTop = document.createElement("div");
     wrapperCropTop.className = "wrapperCropTop";
 
     const labelCropTop = document.createElement('label');
     labelCropTop.textContent = "Обрезать сверху";
-    
+
     const wrapperCropBottom = document.createElement("div");
     wrapperCropBottom.className = "wrapperCropBottom";
 
@@ -145,7 +145,7 @@ const addMenu = () => {
     const buttonPreview = document.createElement("button");
     buttonPreview.className = "buttonPreview";
     buttonPreview.textContent = "Использовать для превью";
-    
+
     const buttonAddVideo = document.createElement("button");
     buttonAddVideo.className = "buttonAddVideo";
     buttonAddVideo.textContent = "Добавить видео в подборку";

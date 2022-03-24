@@ -24,7 +24,7 @@ body {
 
 .preview {
     object-fit: contain;
-    max-height: 150px;
+    max-height: 230px;
 }
 
 .videos {

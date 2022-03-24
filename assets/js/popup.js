@@ -5,6 +5,7 @@ const channelElement = document.querySelector('#channel');
 const resetButton = document.querySelector('#reset');
 const saveButton = document.querySelector('#save');
 const titleInput = document.querySelector('#title');
+const canvas = document.querySelector('#canvas');
 
 const getFromStorage = keys => {
     return new Promise((resolve, _) => chrome.storage.sync.get(keys, result => resolve(result)));
@@ -23,8 +24,17 @@ const setup = async () => {
 
     channelElement.value = channel === undefined ? 0 : channel;
     videosLabel.textContent = `Добавленные ролики [${ videos.length }]:`;
-    
-    previewElement.src = preview === undefined ? "/assets/icons/noImage.jpg" : preview;
+
+    let img = null;
+    if (preview !== undefined) {
+        const builder = new PreviewBuilder();
+        await builder.createPreview(preview);
+        img = await builder.getPreviewUrl();
+    } else {
+        img = "/assets/images/noImage.jpg";
+    }
+
+    previewElement.src = img
 
     for (const video of videos) {
         const wrapper = document.createElement("div");
