@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<link rel="stylesheet" href="assets/css/popup.css">
-	</head>
-	<body>
-	 <div id="notify-wrapper">
-		<div id="notify-header">
-			<h1>Notify!</h1>
-		</div>
-		<div id="notify-containers">
-			<div class="notify-form">
-				<label for="text">Notification</label>
-				<textarea name="text" id="notify-text" placeholder="Let's notify!"></textarea>
-			</div>
-			<div class=notify-buttons>
-				<p>Total: <span id="notify-count"></span></p>
 
-				<button class="button" id="notify-reset">
-					Reset
-				</button>
-				<button class="button primary" id="notify-button">
-					Notify!
-				</button>
-			</div>
-		</div>
-	 </div>
-	 <script src="assets/js/popup.js"></script>
-	</body>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="assets/css/popup.css">
+</head>
+
+<body>
+	<div class="app">
+		<div class="label">Выбери канал:</div>
+		<select class="select" id="channel" name="channel">
+			<option value="0" disabled selected>Выбери канал</option>
+			<option value="1">Мемный Мэм</option>
+		</select>
+		<div class="label" id="videosLabel">Добавленные ролики:</div>
+		<div class="videos" id="videos"></div>
+		<div class="label">Заголовок:</div>
+		<input class="title" type="text" placeholder="Необязательное поле" id="title" />
+		<div class="label">Превью:</div>
+		<img class="preview" id="preview" src="" alt="">
+		<button class="reset" id="reset">Сбросить данные</button>
+		<button class="save" id="save">Сохранить данные</button>
+	</div>
+	<script src="assets/js/previewBuilder.js"></script>
+	<script src="assets/js/popup.js"></script>
+</body>
+
 </html>

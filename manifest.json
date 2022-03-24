@@ -12,9 +12,8 @@
 			"matches": [
 				"https://www.tiktok.com/*"
 			],
-			"js": [
-				"content.js"
-			]
+			"css": ["content.css"],
+			"js": ["content.js"]
 		}
 	],
 	"action": {

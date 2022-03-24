@@ -1,0 +1,100 @@
+
+body {
+    font-size: 18px;
+    color: rgb(78, 78, 78);
+    min-width: 400px;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+}
+
+.app > :first-child {
+    margin-top: 0;
+}
+
+.app > * {
+    margin-top: 8px;
+}
+
+.select {
+    height: 30px;
+}
+
+.preview {
+    object-fit: contain;
+    max-height: 150px;
+}
+
+.videos {
+    padding-right: 5px;
+    overflow: auto;
+    max-height: 300px;
+}
+
+.videos > div {
+    margin-top: 8px;
+}
+
+.videos > :first-child {
+    margin-top: 0;
+}
+
+.video {
+    color: black;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+
+}
+
+.video__name {
+    font-weight: 600;
+}
+
+.video__link {
+    display: block;
+    width: 400px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.video__remove {
+    width: 100%;
+    background: red;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 5px;
+    border: none;
+    height: 25px;
+}
+
+.title {
+    border-radius: 5px;
+    font-size: 16px;
+    border: 1px solid black;
+    outline: none;
+    padding: 6px 5px;
+}
+
+.reset {
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    border-radius: 5px;
+    background: grey;
+    border: none;
+    height: 30px;
+}
+.save {
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    border-radius: 5px;
+    background: green;
+    border: none;
+    height: 30px;
+}
