@@ -12,10 +12,18 @@ const removeFromStorage = keys => {
 
 const onPreview = async (e, cropBottom, cropTop) => {
     const previewPoster = document.querySelector(".tiktok-j6dmhd-ImgPoster");
-
     if (previewPoster === null) return;
 
-    await setToStorage({ preview: { url: previewPoster.src, crop: { top: cropTop, bottom: cropBottom } } });
+    const { preview=[] } = await getFromStorage(["preview"]);
+
+    preview.unshift({ url: previewPoster.src, crop: { top: cropTop, bottom: cropBottom } });
+    if (preview.length > 3) {
+        preview.pop();
+    }
+
+    console.log(preview)
+
+    await setToStorage({ preview });
 }
 
 const onAddVideo = async (e, cropTop, cropBottom) => {

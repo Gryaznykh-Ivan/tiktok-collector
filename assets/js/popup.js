@@ -2,6 +2,7 @@ const videosLabel = document.querySelector('#videosLabel');
 const videoContainer = document.querySelector('#videos');
 const previewElement = document.querySelector('#preview');
 const channelElement = document.querySelector('#channel');
+const previewTypeElement = document.querySelector('#previewType');
 const resetButton = document.querySelector('#reset');
 const saveButton = document.querySelector('#save');
 const titleInput = document.querySelector('#title');
@@ -19,22 +20,41 @@ const removeFromStorage = keys => {
     return new Promise((resolve, _) => chrome.storage.sync.remove(keys, result => resolve(result)));
 }
 
-const setup = async () => {
-    const { channel, videos=[], preview } = await getFromStorage(["channel", "videos", "preview"]);
+const showPreview = async () => {
+    let { previewType=0, preview = [] } = await getFromStorage(["preview", "previewType"]);
 
-    channelElement.value = channel === undefined ? 0 : channel;
-    videosLabel.textContent = `Добавленные ролики [${ videos.length }]:`;
-
-    let img = null;
-    if (preview !== undefined) {
-        const builder = new PreviewBuilder();
-        await builder.createPreview(preview);
-        img = await builder.getPreviewUrl();
-    } else {
-        img = "/assets/images/noImage.jpg";
+    if (preview.length === 0) {
+        previewElement.src = "/assets/images/noImage.jpg";
+        return;
     }
 
-    previewElement.src = img
+    const previewBuilder = new PreviewBuilder();
+    switch (previewType) {
+        case 0:
+            await previewBuilder.createBasicPreview(preview[0]);
+
+            break;
+        case 1:
+            await previewBuilder.createExtendedPreview(preview[0]);
+
+            break;
+        case 2:
+            await previewBuilder.createCollagePreview(preview);
+
+            break;
+    }
+
+    previewElement.src = await previewBuilder.getPreviewUrl();
+}
+
+const setup = async () => {
+    let { channel=0, previewType=0, videos = [], preview = [] } = await getFromStorage(["channel", "videos", "preview", "previewType"]);
+
+    channelElement.value = channel;
+    previewTypeElement.value = previewType;
+    videosLabel.textContent = `Добавленные ролики [${videos.length}]:`;
+
+    showPreview();
 
     for (const video of videos) {
         const wrapper = document.createElement("div");
@@ -52,11 +72,11 @@ const setup = async () => {
 
         const videoCropBottom = document.createElement("div");
         videoCropBottom.className = "video__crop";
-        videoCropBottom.textContent = `Crop bottom: ${ video.crop.bottom }`;
+        videoCropBottom.textContent = `Crop bottom: ${video.crop.bottom}`;
 
         const videoCropTop = document.createElement("div");
         videoCropTop.className = "video__crop";
-        videoCropTop.textContent = `Crop top: ${ video.crop.top }`;
+        videoCropTop.textContent = `Crop top: ${video.crop.top}`;
 
         const videoRemove = document.createElement("button");
         videoRemove.className = "video__remove";
@@ -74,7 +94,7 @@ const setup = async () => {
 }
 
 const onVideoRemoveFromList = async (e, id, container) => {
-    const { videos=[] } = await getFromStorage(["videos"]);
+    const { videos = [] } = await getFromStorage(["videos"]);
     const newVideos = videos.filter(video => video.videoId === id ? false : true);
     await setToStorage({ videos: newVideos });
 
@@ -85,9 +105,9 @@ const onVideoRemoveFromList = async (e, id, container) => {
 
 const onReset = async () => {
     const isConfirmed = confirm("Подтвердите действие. Нажми 'OK', если хочешь сбросить данные");
-    
+
     if (isConfirmed === true) {
-        await removeFromStorage(["channel", "videos", "preview", "title"]);
+        await removeFromStorage(["channel", "videos", "preview", "previewType", "title"]);
         videoContainer.innerHTML = null;
         setup();
     }
@@ -95,9 +115,12 @@ const onReset = async () => {
 
 const onSelect = async (e) => {
     if (e.target == null) return;
-    if (e.target.value === "0") return;
 
-    await setToStorage({ channel: e.target.value });
+    await setToStorage({ [e.target.name]: Number(e.target.value) });
+
+    if (e.target.name === "previewType") {
+        showPreview();
+    }
 }
 
 const onTitleInput = async (e) => {
@@ -108,10 +131,11 @@ const onTitleInput = async (e) => {
         return;
     }
 
-    await setToStorage({ title: e.target.value }); 
+    await setToStorage({ title: e.target.value });
 }
 
 titleInput.oninput = onTitleInput;
 channelElement.onchange = onSelect;
+previewTypeElement.onchange = onSelect;
 resetButton.onclick = onReset;
 window.onload = setup;
